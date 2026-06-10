@@ -1,0 +1,67 @@
+# -----------------------------
+# OS generated files
+# -----------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# -----------------------------
+# Python / Environment
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# -----------------------------
+# PyTorch / Machine Learning
+# -----------------------------
+# Ignore downloaded/trained model weights so they don't bloat the repo
+*.pth
+*.pt
+*.onnx
+*.h5
+*.hdf5
+*.ckpt
+
+# -----------------------------
+# FastAPI / Web Server
+# -----------------------------
+*.log
+
+# -----------------------------
+# IDEs / Editors
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
