@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+body {
+  background-color: #000000;
+  color: #f8fafc; /* slate-50 for high contrast readability */
+}
