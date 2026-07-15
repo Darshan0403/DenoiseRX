@@ -1,87 +1,70 @@
 import React, { useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
-// These paths map to the static files inside your public/samples folder
-const PRELOADED_IMAGES = [
-  { id: 'sample-1', src: '/samples/chest_1.png', label: 'Patient A - AP View' },
-  { id: 'sample-2', src: '/samples/chest_2.png', label: 'Patient B - AP View' },
-  { id: 'sample-3', src: '/samples/chest_3.png', label: 'Patient C - Lateral' },
-  { id: 'sample-4', src: '/samples/chest_4.png', label: 'Patient D - High Noise' },
+const DEMO_IMAGES = [
+  { id: 'demo1', src: '/samples/chest_demo_1.png', label: 'Case 01' },
+  { id: 'demo2', src: '/samples/chest_demo_2.png', label: 'Case 02' },
+  { id: 'demo3', src: '/samples/chest_demo_3.png', label: 'Case 03' },
+  { id: 'demo4', src: '/samples/chest_demo_4.png', label: 'Case 04' },
 ];
 
 export default function ImageSelector({ onImageSelect }) {
-  const [activeId, setActiveId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
 
-  const handleSelect = async (img) => {
-    setActiveId(img.id);
-    setIsLoading(true);
-    
+  const handleSelect = async (image) => {
+    setLoadingId(image.id);
     try {
-      // The Magic Trick: Fetch the static image and convert it to a File object
-      const response = await fetch(img.src);
+      // 1. Fetch the static asset from the /public folder
+      const response = await fetch(image.src);
+      
+      // 2. Convert the response into raw binary data (Blob)
       const blob = await response.blob();
       
-      // Package it exactly how the UploadZone and Backend expect it
-      const file = new File([blob], `${img.id}.png`, { type: blob.type });
+      // 3. Package the Blob into a standard File object that Axios/FastAPI understands
+      const file = new File([blob], `${image.id}.png`, { type: 'image/png' });
       
-      // Pass both the File object (for the API) and the src URL (for UI preview)
-      onImageSelect(file, img.src); 
+      // 4. Pass the File and the preview URL back to Inference.jsx
+      onImageSelect(file, image.src);
     } catch (error) {
-      console.error("Failed to load sample image:", error);
-      alert("Failed to load the sample image. Check if the files exist in public/samples/");
+      console.error("Failed to load demo image into memory:", error);
     } finally {
-      setIsLoading(false);
+      setLoadingId(null);
     }
   };
 
   return (
-    <div className="w-full">
-      <h3 className="text-lg font-medium text-white mb-4">
-        Select a sample radiograph
-      </h3>
-      
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {PRELOADED_IMAGES.map((img) => {
-          const isActive = activeId === img.id;
-          
-          return (
-            <button
-              key={img.id}
-              onClick={() => handleSelect(img)}
-              disabled={isLoading}
-              className={`relative flex flex-col items-center p-2 rounded-xl border-2 text-left transition-all overflow-hidden ${
-                isActive 
-                  ? 'border-blue-500 bg-zinc-900 shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
-                  : 'border-zinc-800 bg-black hover:border-zinc-600 hover:bg-zinc-900'
-              }`}
-            >
-              {/* Image Thumbnail */}
-              <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-zinc-800 mb-2">
-                <img 
-                  src={img.src} 
-                  alt={img.label}
-                  className={`w-full h-full object-cover transition-opacity ${isLoading && isActive ? 'opacity-50' : 'opacity-100'}`}
-                />
-                
-                {/* Active Checkmark Overlay */}
-                {isActive && (
-                  <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-0.5 shadow-lg">
-                    <CheckCircle2 className="w-4 h-4" />
-                  </div>
-                )}
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {DEMO_IMAGES.map((img) => (
+        <button
+          key={img.id}
+          onClick={() => handleSelect(img)}
+          disabled={loadingId !== null}
+          className="group relative flex flex-col aspect-square bg-black border border-zinc-800 rounded-xl overflow-hidden hover:border-blue-500 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {/* Image Thumbnail */}
+          <div className="w-full h-full relative">
+            <img 
+              src={img.src} 
+              alt={img.label} 
+              className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+            />
+            
+            {/* Loading Spinner overlay if this specific image is being fetched */}
+            {loadingId === img.id && (
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
               </div>
-              
-              {/* Label */}
-              <span className={`text-xs font-medium truncate w-full text-center ${
-                isActive ? 'text-blue-400' : 'text-zinc-400'
-              }`}>
-                {img.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+            )}
+          </div>
+          
+          {/* Label Bar */}
+          <div className="absolute bottom-0 w-full bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800 p-2">
+            <span className="text-xs font-medium text-zinc-300 group-hover:text-blue-400 transition-colors">
+              {img.label}
+            </span>
+          </div>
+        </button>
+      ))}
     </div>
   );
 }

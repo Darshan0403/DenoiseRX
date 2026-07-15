@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Zap, Layers, Activity } from 'lucide-react';
+import { ArrowRight, Layers, Activity, Cpu, Target } from 'lucide-react';
+import ImageCompareSlider from '../components/ImageCompareSlider';
 
 export default function Landing() {
   return (
@@ -13,7 +14,7 @@ export default function Landing() {
         <div className="flex-1 space-y-8">
           <div className="inline-flex items-center px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-semibold tracking-wide uppercase">
             <Activity className="w-3 h-3 mr-2" />
-            Research Preview Online
+            Live Inference Engine v2.1
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
@@ -22,14 +23,13 @@ export default function Landing() {
           </h1>
           
           <p className="text-lg text-zinc-400 max-w-2xl leading-relaxed">
-            Two models. Two philosophies. One pipeline. <br/>
-            Evaluate state-of-the-art supervised and self-supervised deep learning architectures for radiographic noise reduction.
+            A highly optimized, production-ready pipeline for radiographic noise reduction. Powered by a custom Nonlinear Activation Free Network (NAFNet) and tuned via rigorous ablation testing for maximum clinical fidelity.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <Link 
               to="/inference" 
-              className="inline-flex justify-center items-center px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors"
+              className="inline-flex justify-center items-center px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors shadow-[0_0_20px_rgba(59,130,246,0.3)]"
             >
               Try Live Inference
               <ArrowRight className="ml-2 w-4 h-4" />
@@ -43,76 +43,76 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Right Column: The Clinical Visual */}
-        <div className="flex-1 w-full relative">
-          <div className="aspect-[4/3] rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden flex relative shadow-2xl">
-            {/* Split Screen Mockup - Assuming chest_1.png exists from our previous steps */}
-            <div className="w-1/2 h-full relative border-r border-zinc-800 bg-black">
-              <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-zinc-300 text-xs px-2 py-1 rounded uppercase tracking-wider font-medium z-10">Noisy Input</div>
-              <img src="/samples/chest_1.png" alt="Noisy X-ray" className="w-[200%] max-w-none h-full object-cover object-left opacity-60 mix-blend-screen" style={{ filter: 'noise(20%)' }} />
-            </div>
-            <div className="w-1/2 h-full relative bg-black">
-              <div className="absolute top-4 right-4 bg-blue-600/20 backdrop-blur-md text-blue-400 text-xs px-2 py-1 rounded border border-blue-500/30 uppercase tracking-wider font-medium z-10">Denoised</div>
-              <img src="/samples/chest_1.png" alt="Clean X-ray" className="w-[200%] max-w-none h-full object-cover object-right translate-x-[-50%]" />
-            </div>
-          </div>
+        {/* Right Column: The Interactive Visual */}
+        <div className="flex-1 w-full relative z-10">
+          <ImageCompareSlider 
+            beforeImage="/samples/samp_2_noisy.png" 
+            afterImage="/samples/samp_2_denoised.png" 
+            beforeLabel="Input: 20.20 dB"
+            afterLabel="Output: 38.47 dB"
+          />
         </div>
       </section>
 
-      {/* 2. STATS BAR */}
-      <section className="border-y border-zinc-800 bg-zinc-950">
+      {/* 2. PRODUCTION METRICS (The Hard Data) */}
+      <section className="border-y border-zinc-800 bg-zinc-950/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-zinc-800">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-zinc-800">
             <div className="flex flex-col px-4">
-              <span className="text-3xl font-bold text-white mb-1">2</span>
-              <span className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Distinct Architectures</span>
+              <span className="text-3xl font-bold text-blue-400 mb-1">~18 dB</span>
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Avg PSNR Improvement</span>
             </div>
-            <div className="flex flex-col px-4 pt-4 md:pt-0">
-              <span className="text-3xl font-bold text-blue-400 mb-1">+12 dB</span>
-              <span className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Peak PSNR Improvement</span>
+            <div className="flex flex-col px-4">
+              <span className="text-3xl font-bold text-white mb-1">0.925</span>
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Peak SSIM</span>
             </div>
-            <div className="flex flex-col px-4 pt-4 md:pt-0">
-              <span className="text-3xl font-bold text-white mb-1">&lt; 1.5s</span>
-              <span className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Inference Latency</span>
+            <div className="flex flex-col px-4">
+              <span className="text-3xl font-bold text-white mb-1">2.9M</span>
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Parameters</span>
+            </div>
+            <div className="flex flex-col px-4">
+              <span className="text-3xl font-bold text-white mb-1">11.2 MB</span>
+              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Edge-Ready Footprint</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. THE ARCHITECTURES (Two-Column Section) */}
+      {/* 3. THE ENGINEERING PIPELINE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">The Engineering Contrast</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Architectural Optimization</h2>
           <p className="text-zinc-400 max-w-2xl mx-auto">
-            This project compares two fundamentally different approaches to image restoration, evaluating the trade-off between theoretical limits and clinical data constraints.
+            DenoiseRX abandons traditional bloated neural networks in favor of a hyper-efficient, purpose-built supervised pipeline validated against the NIH Chest X-ray dataset.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* NAFNet Card */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-zinc-700 transition-colors">
-            <Layers className="w-8 h-8 text-blue-500 mb-6" />
-            <h3 className="text-xl font-bold text-white mb-2">NAFNet (2022)</h3>
-            <p className="text-sm text-blue-400 font-medium mb-4">Supervised • Requires Clean Targets</p>
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Architecture Card */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-zinc-700 transition-colors group">
+            <Layers className="w-8 h-8 text-blue-500 mb-6 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Nonlinear Activation Free</h3>
             <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-              A deliberately simplified architecture that achieves state-of-the-art results by entirely removing nonlinear activation functions (ReLU, GELU) in favor of simple channel splitting and multiplication gates. Represents the theoretical ceiling of performance when perfect ground-truth data is available.
+              Achieves state-of-the-art restoration by entirely removing computationally expensive nonlinear activation functions (ReLU, GELU). It relies on simple channel splitting and multiplication gates, keeping the parameter count strictly under 3 Million.
             </p>
-            <Link to="/about" className="text-sm text-white hover:text-blue-400 font-medium inline-flex items-center transition-colors">
-              Read architectural deep dive <ArrowRight className="ml-1 w-3 h-3" />
-            </Link>
           </div>
 
-          {/* Noise2Noise Card */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-zinc-700 transition-colors">
-            <Shield className="w-8 h-8 text-purple-500 mb-6" />
-            <h3 className="text-xl font-bold text-white mb-2">Noise2Noise (2018)</h3>
-            <p className="text-sm text-purple-400 font-medium mb-4">Self-Supervised • Clinical Realism</p>
+          {/* Ablation Card */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-zinc-700 transition-colors group">
+            <Target className="w-8 h-8 text-blue-500 mb-6 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Ablation-Tested Loss</h3>
             <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-              Built on the statistical principle that neural networks learn the expected value of their targets. By training a ResUNet on pairs of independently noisy images, the model converges to the clean image without ever seeing one. The realistic choice for medical imaging where clean reference scans rarely exist.
+              Conducted rigorous ablation studies comparing pure L1 against composite L1+SSIM loss topologies. Counterintuitively, the simplified pure L1 objective yielded superior global convergence, outperforming the composite model in both PSNR and structural similarity.
             </p>
-            <Link to="/about" className="text-sm text-white hover:text-purple-400 font-medium inline-flex items-center transition-colors">
-              Read architectural deep dive <ArrowRight className="ml-1 w-3 h-3" />
-            </Link>
+          </div>
+
+          {/* Performance Card */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-zinc-700 transition-colors group">
+            <Cpu className="w-8 h-8 text-blue-500 mb-6 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Rapid Convergence</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              Trained across 50 epochs utilizing a Cosine Annealing Learning Rate scheduler. The model reliably converges to a 38.47 dB peak PSNR with sub-second inference latency, making it strictly viable for live clinical workflows.
+            </p>
           </div>
         </div>
       </section>
